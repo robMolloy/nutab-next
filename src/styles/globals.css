@@ -26,6 +26,12 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+@keyframes flashFade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
