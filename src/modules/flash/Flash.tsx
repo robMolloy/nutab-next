@@ -1,38 +1,36 @@
-import React, {
-  ForwardedRef,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-export type FlashMethods = {
-  addFlash: () => void;
+type TFlashSignal = number;
+export const useFlash = () => {
+  const [flashSignal, setFlashSignal] = useState<TFlashSignal>(0);
+  const flash = () => setFlashSignal(Math.random());
+
+  return { flash, flashSignal };
 };
 
-const FlashComponent = (_: unknown, ref: ForwardedRef<FlashMethods>) => {
+export const Flash = (p: { flashSignal: TFlashSignal }) => {
+  const [firstRender, setFirstRender] = useState(true);
   const [flashes, setFlashes] = useState<string[]>([]);
   const [finishedFlashes, setFinishedFlashes] = useState<string[]>([]);
 
   const addFlash = () => setFlashes((prevFlashes) => [...prevFlashes, uuid()]);
-
   const removeFlash = (x: string) =>
     setFinishedFlashes([...finishedFlashes, x]);
 
   useEffect(() => {
-    console.log(123);
+    if (firstRender) return setFirstRender(false);
 
-    (() => {
-      if (flashes.length === 0) return;
-      if (finishedFlashes.length === flashes.length) {
-        setFlashes([]);
-        setFinishedFlashes([]);
-      }
-    })();
+    addFlash();
+  }, [p.flashSignal]);
+
+  useEffect(() => {
+    if (flashes.length === 0) return;
+    if (finishedFlashes.length === flashes.length) {
+      setFlashes([]);
+      setFinishedFlashes([]);
+    }
   }, [finishedFlashes]);
-
-  useImperativeHandle(ref, () => ({ addFlash }));
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100%" }}>
@@ -56,6 +54,3 @@ const FlashComponent = (_: unknown, ref: ForwardedRef<FlashMethods>) => {
     </div>
   );
 };
-
-export const Flash = forwardRef<FlashMethods, {}>(FlashComponent);
-Flash.displayName = "Flash";

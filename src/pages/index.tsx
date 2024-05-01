@@ -1,22 +1,13 @@
-import { useRef } from "react";
-
-import { Flash, FlashMethods } from "@/modules";
+import { Flash, useFlash } from "@/modules";
 
 const Parent = () => {
-  const childRef = useRef<FlashMethods>(null);
-
-  const handleAddFlash = () => childRef.current?.addFlash();
+  const { flash, flashSignal } = useFlash();
 
   return (
     <main className={`min-h-screen`}>
-      <button onClick={handleAddFlash}>add flash asdxfrom parent</button>
-      <div
-        style={{
-          height: "37vh",
-          width: `${(37 * 6) / 4}vh`,
-        }}
-      >
-        <Flash ref={childRef} />
+      <button onClick={flash}>add flash asdxfrom parent</button>
+      <div style={{ height: "37vh", width: `${(37 * 6) / 4}vh` }}>
+        <Flash flashSignal={flashSignal} />
       </div>
     </main>
   );
