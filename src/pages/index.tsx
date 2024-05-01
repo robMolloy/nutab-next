@@ -1,18 +1,15 @@
-import { Flash, FlashMethods } from "@/modules";
 import { useRef } from "react";
-import React, { useState } from "react";
-import { v4 as uuid } from "uuid";
+
+import { Flash, FlashMethods } from "@/modules";
 
 const Parent = () => {
   const childRef = useRef<FlashMethods>(null);
 
-  const handleAddFlash = () => {
-    childRef.current?.addFlash();
-  };
+  const handleAddFlash = () => childRef.current?.addFlash();
 
   return (
     <main className={`min-h-screen`}>
-      <button onClick={handleAddFlash}>add flash from parent</button>
+      <button onClick={handleAddFlash}>add flash asdxfrom parent</button>
       <div
         style={{
           height: "37vh",
