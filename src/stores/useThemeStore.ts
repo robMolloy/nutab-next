@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { Theme as TThemeName } from "daisyui";
 
+export type TDaisyBrandColor =
+  | "neutral"
+  | "primary"
+  | "secondary"
+  | "accent"
+  | "ghost";
+export type TDaisyStateColor = "info" | "success" | "warning" | "error";
+export type TDaisySize = "xs" | "sm" | "md" | "lg";
+
 const themeNames = [
   "light",
   "dark",

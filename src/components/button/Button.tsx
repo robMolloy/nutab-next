@@ -1,19 +1,11 @@
+import { TDaisyBrandColor, TDaisySize, TDaisyStateColor } from "@/stores";
 import React from "react";
 
-type TThemeBrandColors =
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "ghost";
-type TThemeStateColors = "info" | "success" | "warning" | "error";
-type TThemeSize = "xs" | "sm" | "md" | "lg";
-
-type TBtnVariant = TThemeBrandColors | TThemeStateColors | "link";
+type TBtnVariant = TDaisyBrandColor | TDaisyStateColor | "link";
 
 export type TButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant: TBtnVariant;
-  size?: TThemeSize;
+  size?: TDaisySize;
   outline?: boolean;
   wide?: boolean;
   children?: React.ReactNode;
@@ -32,7 +24,7 @@ const variantToVariantClassMap: { [k in TBtnVariant]: `btn-${k}` } = {
   error: "btn-error",
 };
 const sizeToSizeClassMap: {
-  [k in TThemeSize]: k extends "md" ? "" : `btn-${k}`;
+  [k in TDaisySize]: k extends "md" ? "" : `btn-${k}`;
 } = {
   xs: "btn-xs",
   sm: "btn-sm",
