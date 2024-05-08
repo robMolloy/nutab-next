@@ -1,5 +1,5 @@
+import { useEffect } from "react";
 import { create } from "zustand";
-import { Theme as TThemeName } from "daisyui";
 
 export type TDaisyBrandColor =
   | "neutral"
@@ -45,24 +45,19 @@ const themeNames = [
   "sunset",
 ] as const;
 
+type TThemeNames = typeof themeNames;
+type TThemeName = TThemeNames[number];
 interface ThemeState {
-  themeNames: typeof themeNames;
-  themeName: TThemeName;
+  themeNames: TThemeNames;
+  themeName: TThemeName | undefined;
   setThemeName: (themeName: TThemeName) => void;
   setRandomThemeName: () => void;
 }
 
-export const useThemeStore = create<ThemeState>()((set, get) => ({
+export const useThemeStoreBase = create<ThemeState>()((set, get) => ({
   themeNames,
-  themeName: "cupcake",
-  setThemeName: (themeName: TThemeName) => {
-    const htmlElm = document.querySelector("html");
-    if (!htmlElm)
-      throw new Error("can't find html element so unable to change theme");
-
-    htmlElm.setAttribute("data-theme", themeName);
-    set(() => ({ themeName: themeName }));
-  },
+  themeName: undefined,
+  setThemeName: (themeName) => set(() => ({ themeName: themeName })),
   setRandomThemeName: () => {
     const randomNumber = Math.floor(Math.random() * themeNames.length);
     const newThemeName = get().themeNames[randomNumber];
@@ -70,3 +65,29 @@ export const useThemeStore = create<ThemeState>()((set, get) => ({
     if (newThemeName) get().setThemeName(newThemeName);
   },
 }));
+
+export const useThemeStore = () => {
+  const themeStoreBase = useThemeStoreBase();
+  useEffect(() => {
+    const initThemeName = localStorage?.getItem("themeName");
+
+    const confirmedThemeName = themeNames.find((x) => x === initThemeName);
+    if (confirmedThemeName) themeStoreBase.setThemeName(confirmedThemeName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const themeName = themeStoreBase.themeName;
+    if (!themeName) return;
+
+    localStorage.setItem("themeName", themeName);
+
+    const htmlElm = document.querySelector("html");
+    if (!htmlElm)
+      throw new Error("can't find html element so unable to change theme");
+
+    htmlElm.setAttribute("data-theme", themeName);
+  }, [themeStoreBase.themeName]);
+
+  return themeStoreBase;
+};
