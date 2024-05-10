@@ -57,7 +57,7 @@ interface ThemeState {
 export const useThemeStoreBase = create<ThemeState>()((set, get) => ({
   themeNames,
   themeName: undefined,
-  setThemeName: (themeName) => set(() => ({ themeName: themeName })),
+  setThemeName: (themeName) => set(() => ({ themeName })),
   setRandomThemeName: () => {
     const randomNumber = Math.floor(Math.random() * themeNames.length);
     const newThemeName = get().themeNames[randomNumber];
@@ -77,16 +77,15 @@ export const useThemeStore = () => {
   }, []);
 
   useEffect(() => {
-    const themeName = themeStoreBase.themeName;
-    if (!themeName) return;
+    if (!themeStoreBase.themeName) return;
 
-    localStorage.setItem("themeName", themeName);
+    localStorage.setItem("themeName", themeStoreBase.themeName);
 
     const htmlElm = document.querySelector("html");
     if (!htmlElm)
       throw new Error("can't find html element so unable to change theme");
 
-    htmlElm.setAttribute("data-theme", themeName);
+    htmlElm.setAttribute("data-theme", themeStoreBase.themeName);
   }, [themeStoreBase.themeName]);
 
   return themeStoreBase;

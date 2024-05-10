@@ -32,7 +32,15 @@ const sizeToSizeClassMap: {
   lg: "btn-lg",
 };
 export const Button = (p: TButtonProps) => {
-  const { variant, size, outline, wide, children, className, ...other } = p;
+  const {
+    variant,
+    size,
+    outline,
+    wide,
+    children,
+    className = "",
+    ...other
+  } = p;
   const variantClass = variantToVariantClassMap[variant];
   const sizeClass = size ? sizeToSizeClassMap[size] : "";
   const outlineClass = !!outline ? "btn-outline" : "";
