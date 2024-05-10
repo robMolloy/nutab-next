@@ -9,7 +9,10 @@ export const useFlash = () => {
   return { flash, flashSignal };
 };
 
-export const Flash = (p: { flashSignal: TFlashSignal }) => {
+export const Flash = (p: {
+  flashSignal: TFlashSignal;
+  children?: React.ReactNode;
+}) => {
   const [firstRender, setFirstRender] = useState(true);
   const [flashes, setFlashes] = useState<string[]>([]);
   const [finishedFlashes, setFinishedFlashes] = useState<string[]>([]);
@@ -33,7 +36,7 @@ export const Flash = (p: { flashSignal: TFlashSignal }) => {
   }, [finishedFlashes]);
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+    <>
       {flashes
         .filter((flash) => !finishedFlashes.includes(flash))
         .map((x) => (
@@ -48,9 +51,11 @@ export const Flash = (p: { flashSignal: TFlashSignal }) => {
               width: "100%",
               height: "100%",
               backgroundColor: "white",
+              zIndex: 99,
             }}
           />
         ))}
-    </div>
+      {p.children}
+    </>
   );
 };

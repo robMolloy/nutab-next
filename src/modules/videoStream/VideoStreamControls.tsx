@@ -10,12 +10,14 @@ export const VideoStreamControls = () => {
   const [width, setWidth] = useState(store.width);
   const [aspectRatio, setAspectRatio] = useState(store.aspectRatio);
 
-  const isChanged = () =>
-    width !== store.width || aspectRatio !== store.aspectRatio;
+  const isChanged = width !== store.width || aspectRatio !== store.aspectRatio;
 
   return (
     <div>
-      <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-4 items-center max-w-[350px] border-solid border-red-500 border-1">
+        <div>height: {store.height}</div>
+        <div>width: {store.width}</div>
+        <div>aspectRatio: {JSON.stringify(store.aspectRatio)}</div>
         <Input
           label="Width"
           type="number"
@@ -32,25 +34,21 @@ export const VideoStreamControls = () => {
           onChange={(x) => setAspectRatio(x)}
         />
         <div className="flex flex-col gap-1 items-center">
-          <div className={`text-warning "" ${isChanged() ? "" : "opacity-0"}`}>
+          <div
+            data-changed={isChanged}
+            className={`text-warning data-[changed=false]:invisible`}
+          >
             hit the save button to confirm your changes
           </div>
+
           <Button
             variant="primary"
-            wide
             onClick={() => store.set({ width, aspectRatio })}
           >
             Save changes
           </Button>
         </div>
       </div>
-      <br />
-      <br />
-      width: {store.width}
-      <br />
-      height: {store.height}
-      <br />
-      aspectRatio: {JSON.stringify(store.aspectRatio)}
     </div>
   );
 };

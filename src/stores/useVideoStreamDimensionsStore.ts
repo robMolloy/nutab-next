@@ -1,14 +1,17 @@
 import { create } from "zustand";
 
 const aspectRatios = [
+  [4, 6],
+  [4, 4],
   [6, 4],
   [9, 5],
   [10, 6],
   [1920, 1080],
+  [6, 1],
 ] as const;
 
 type TAspectRatios = typeof aspectRatios;
-type TAspectRatio = TAspectRatios[number];
+export type TAspectRatio = TAspectRatios[number];
 
 type TVideoStreamDimensionsState = {
   aspectRatios: TAspectRatios;
@@ -24,7 +27,7 @@ export const useVideoStreamDimensionsStoreBase =
     aspectRatios: aspectRatios,
     aspectRatio: aspectRatios[0],
     setAspectRatio: (aspectRatio) => set(() => ({ aspectRatio })),
-    width: 300,
+    width: 500,
     setWidth: (width) => set(() => ({ width })),
     getHeight: () => {
       const aspectRatio = get().aspectRatio;
