@@ -30,24 +30,18 @@ export const Flash = (p: {
 
   return (
     <>
-      {flashes
-        .filter((flash) => !finishedFlashes.includes(flash))
-        .map((x) => (
-          <div
-            key={x}
-            onAnimationEndCapture={() => removeFlash(x)}
-            style={{
-              opacity: "0",
-              position: "absolute",
-              animation: "flashFade 1s",
-              transition: "opacity 1s",
-              width: "100%",
-              height: "100%",
-              backgroundColor: "white",
-              zIndex: 99,
-            }}
-          />
-        ))}
+      <div className="relative w-full h-full z-[99]">
+        {flashes
+          .filter((flash) => !finishedFlashes.includes(flash))
+          .map((x) => (
+            <div
+              key={x}
+              onAnimationEndCapture={() => removeFlash(x)}
+              className="absolute opacity-0 h-full w-full bg-white"
+              style={{ animation: "flashFade 1s", transition: "opacity 1s" }}
+            />
+          ))}
+      </div>
       {p.children}
     </>
   );
