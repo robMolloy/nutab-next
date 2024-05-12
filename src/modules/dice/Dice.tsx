@@ -7,15 +7,16 @@ export type TDiceProps = {
 };
 
 export const Dice = (p: TDiceProps) => {
-  const [value, setValue] = useState([0] as [number]);
+  const [value, setValue] = useState(0);
 
-  const rollTheDice = () => setValue([Math.floor(Math.random() * 6)]);
+  const rollTheDice = () => setValue(Math.floor(Math.random() * 6));
 
   useSignalListener({
     signal: p.signal,
-    value,
-    onSignalChange: () => rollTheDice(),
-    onValueChange: () => p.onChange(value[0]),
+    onSignalChange: () => {
+      rollTheDice();
+      p.onChange(value);
+    },
   });
 
   return (
