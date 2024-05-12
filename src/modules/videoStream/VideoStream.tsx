@@ -1,33 +1,39 @@
-import { useSignal } from "@/utils/useSignal";
-import { Flash } from "..";
+import { useSignal, useSignalListener } from "@/utils/useSignal";
 import { DumbVideoStream } from ".";
+import { Flash } from "..";
 import {
   VideoStreamContainer,
   VideoStreamContainerItem,
 } from "./VideoStreamContainer";
-import { useEffect } from "react";
 
 export const VideoStream = (p: {
   signal: ReturnType<typeof useSignal>;
   onCapture: React.ComponentProps<typeof DumbVideoStream>["onCapture"];
-  className: HTMLDivElement["className"];
+  className?: HTMLDivElement["className"];
+  onClick?: () => void;
+  showVideo?: boolean;
 }) => {
+  const { showVideo = true } = p;
   const flashSignal = useSignal();
   const captureSignal = useSignal();
-
-  useEffect(() => {
-    flashSignal.changeSignal();
-    captureSignal.changeSignal();
-  }, [p.signal.signal]);
+  useSignalListener({
+    signal: p.signal,
+    onSignalChange: () => {
+      flashSignal.changeSignal();
+      captureSignal.changeSignal();
+    },
+  });
 
   return (
-    <VideoStreamContainer className={p.className}>
+    <VideoStreamContainer className={p.className} onClick={p.onClick}>
       <VideoStreamContainerItem>
         <Flash signal={flashSignal} />
       </VideoStreamContainerItem>
-      <VideoStreamContainerItem>
-        <DumbVideoStream signal={captureSignal} onCapture={p.onCapture} />
-      </VideoStreamContainerItem>
+      {showVideo && (
+        <VideoStreamContainerItem>
+          <DumbVideoStream signal={captureSignal} onCapture={p.onCapture} />
+        </VideoStreamContainerItem>
+      )}
     </VideoStreamContainer>
   );
 };

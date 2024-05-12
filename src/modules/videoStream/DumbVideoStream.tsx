@@ -7,7 +7,7 @@ import {
   safeGetVideoStream,
   stopVideoStream,
 } from ".";
-import { useSignal } from "@/utils/useSignal";
+import { useSignal, useSignalListener } from "@/utils/useSignal";
 
 type THTMLVideoElement = VideoHTMLAttributes<HTMLVideoElement>;
 
@@ -24,6 +24,16 @@ export const DumbVideoStream = (p: TDumbVideoStreamProps) => {
   const [videoStream, setVideoStream] = useState<MediaStream | undefined>(
     undefined
   );
+  useSignalListener({
+    signal,
+    onSignalChange: () => {
+      const videoElement = videoElmRef.current;
+      if (!videoElement) return;
+      const imageDataUrl = getImageDataUrlFromVideoElement({ videoElement });
+
+      if (imageDataUrl) onCapture(imageDataUrl);
+    },
+  });
 
   const init = async () => {
     if (videoStream) stopVideoStream(videoStream);
@@ -51,13 +61,6 @@ export const DumbVideoStream = (p: TDumbVideoStreamProps) => {
   useEffect(() => {
     init();
   }, [store.aspectRatio, store.width]);
-  useEffect(() => {
-    const videoElement = videoElmRef.current;
-    if (!videoElement) return;
-    const imageDataUrl = getImageDataUrlFromVideoElement({ videoElement });
-
-    if (imageDataUrl) onCapture(imageDataUrl);
-  }, [signal]);
 
   return (
     <video

@@ -1,4 +1,4 @@
-import { useSignal } from "@/utils/useSignal";
+import { useSignal, useSignalListener } from "@/utils/useSignal";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
@@ -6,7 +6,6 @@ export const Flash = (p: {
   signal: ReturnType<typeof useSignal>;
   children?: React.ReactNode;
 }) => {
-  const [firstRender, setFirstRender] = useState(true);
   const [flashes, setFlashes] = useState<string[]>([]);
   const [finishedFlashes, setFinishedFlashes] = useState<string[]>([]);
 
@@ -14,11 +13,12 @@ export const Flash = (p: {
   const removeFlash = (x: string) =>
     setFinishedFlashes([...finishedFlashes, x]);
 
-  useEffect(() => {
-    if (firstRender) return setFirstRender(false);
-
-    addFlash();
-  }, [p.signal.signal]);
+  useSignalListener({
+    signal: p.signal,
+    onSignalChange: () => {
+      addFlash();
+    },
+  });
 
   useEffect(() => {
     if (flashes.length === 0) return;

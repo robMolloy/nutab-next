@@ -1,65 +1,77 @@
 import { Button } from "@/components";
-// import { VideoStreamControls } from "@/modules/videoStream";
-// import { VideoStream } from "@/modules/videoStream/VideoStream";
-// import {
-//   VideoStreamContainer,
-//   VideoStreamContainerItem,
-// } from "@/modules/videoStream/VideoStreamContainer";
-// import { useState } from "react";
+import { VideoStream } from "@/modules/videoStream/VideoStream";
+import {
+  VideoStreamContainer,
+  VideoStreamContainerItem,
+} from "@/modules/videoStream/VideoStreamContainer";
 import { useSignal } from "@/utils/useSignal";
-import { Dice } from "@/modules/dice";
 import { useState } from "react";
 
+// @State() status:
+//     | 'loading'
+//     | 'preReady'
+//     | 'ready'
+//     | 'capturing'
+//     | 'selecting'
+//     | 'sending'
+//     | 'fail'
+//     | 'success' = 'loading';
+
+const useFlow = () => {
+  const [showVideoStream, setShowVideoStream] = useState(true);
+  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
+
+  const status = (() => {
+    if (imageDataUrl) return "selecting";
+    return "capturing";
+  })();
+
+  return {
+    status,
+    showVideoStream,
+    setShowVideoStream,
+    imageDataUrl,
+    setImageDataUrl,
+  };
+};
+
 const Parent = () => {
-  // const [showVideoStream, setShowVideoStream] = useState(true);
   const signal = useSignal();
-  const [count, setCount] = useState(0);
+  const { status, imageDataUrl, setImageDataUrl } = useFlow();
 
   return (
     <main className={`min-h-screen`}>
-      <Button
-        variant="primary"
-        onClick={() => {
-          setCount(count + 1);
-          signal.changeSignal();
-        }}
-      >
-        Click me
-      </Button>
-      <div>{count}</div>
-      <Dice
-        signal={signal}
-        onChange={(x) => {
-          console.log(x);
-        }}
-      />
-      {/* <VideoStreamContainer>
-        <VideoStreamContainerItem>
-          <div
-            className={`flex align-middle justify-center w-full h-full ${
-              showVideoStream ? "hidden" : ""
-            }`}
-          >
-            <div>hiya</div>
-          </div>
-        </VideoStreamContainerItem>
-        <VideoStreamContainerItem>
-          <VideoStream
-            className={`${showVideoStream ? "" : "hidden"}`}
-            signal={signal}
-            onCapture={(x) => console.log({ x })}
-          />
-        </VideoStreamContainerItem>
-      </VideoStreamContainer> */}
+      <Button variant="primary">Click me</Button>
 
-      {/* <Button
-        variant="primary"
-        onClick={() => setShowVideoStream(!showVideoStream)}
-      >
-        show/hide
-      </Button>
-      <VideoStreamControls /> */}
-      <br />
+      <pre>{JSON.stringify({ status, imageDataUrl }, undefined, 2)}</pre>
+
+      <div className="flex justify-center items-center">
+        <VideoStreamContainer>
+          {(status === "capturing" || status === "selecting") && (
+            <VideoStreamContainerItem>
+              <VideoStream
+                signal={signal}
+                onCapture={(x) => setImageDataUrl(x)}
+                onClick={() => signal.changeSignal()}
+                showVideo={!imageDataUrl}
+              />
+            </VideoStreamContainerItem>
+          )}
+          {status === "selecting" && (
+            <VideoStreamContainerItem>
+              <div
+                className={`flex w-full h-full`}
+                style={{
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundImage: `url('${imageDataUrl}`,
+                }}
+              />
+            </VideoStreamContainerItem>
+          )}
+        </VideoStreamContainer>
+      </div>
     </main>
   );
 };

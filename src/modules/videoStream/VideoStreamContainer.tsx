@@ -4,6 +4,7 @@ import React from "react";
 export type TVideoStreamContainerProps = {
   children: React.ReactNode;
   className?: HTMLDivElement["className"];
+  onClick?: () => void;
 };
 
 export const VideoStreamContainer = (p: TVideoStreamContainerProps) => {
@@ -13,12 +14,27 @@ export const VideoStreamContainer = (p: TVideoStreamContainerProps) => {
     <div
       className={`relative h-[40vh] ${p.className}`}
       style={{ width: `${40 * store.calculateRatio()}vh` }}
+      onClick={p.onClick}
     >
       {p.children}
     </div>
   );
 };
 
-export const VideoStreamContainerItem = (p: { children: React.ReactNode }) => {
-  return <div className="absolute flex h-full w-full">{p.children}</div>;
+export const VideoStreamContainerItem = (
+  p: {
+    children: React.ReactNode;
+    onClick?: () => void;
+  } & Partial<Pick<HTMLDivElement, "style" | "className">>
+) => {
+  const { style = {} } = p;
+  return (
+    <div
+      className={`absolute flex h-full w-full ${p.className}`}
+      style={style}
+      onClick={p.onClick}
+    >
+      {p.children}
+    </div>
+  );
 };
