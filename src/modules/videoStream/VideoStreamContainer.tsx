@@ -21,12 +21,12 @@ export const VideoStreamContainer = (p: TVideoStreamContainerProps) => {
   );
 };
 
-export const VideoStreamContainerItem = (
-  p: {
-    children: React.ReactNode;
-    onClick?: () => void;
-  } & Partial<Pick<HTMLDivElement, "style" | "className">>
-) => {
+export const VideoStreamContainerItem = (p: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  style?: HTMLDivElement["style"];
+  className?: HTMLDivElement["className"];
+}) => {
   const { style = {} } = p;
   return (
     <div

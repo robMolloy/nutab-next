@@ -1,5 +1,5 @@
-import { Button } from "@/components";
-import { VideoStream } from "@/modules/videoStream/VideoStream";
+import { Flash } from "@/modules";
+import { DumbVideoStream } from "@/modules/videoStream";
 import {
   VideoStreamContainer,
   VideoStreamContainerItem,
@@ -18,8 +18,15 @@ import { useState } from "react";
 //     | 'success' = 'loading';
 
 const useFlow = () => {
-  const [showVideoStream, setShowVideoStream] = useState(true);
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
+
+  const flashSignal = useSignal();
+  const captureSignal = useSignal();
+
+  const capture = () => {
+    flashSignal.changeSignal();
+    captureSignal.changeSignal();
+  };
 
   const status = (() => {
     if (imageDataUrl) return "selecting";
@@ -28,32 +35,40 @@ const useFlow = () => {
 
   return {
     status,
-    showVideoStream,
-    setShowVideoStream,
     imageDataUrl,
     setImageDataUrl,
+    flashSignal,
+    captureSignal,
+    capture,
   };
 };
 
 const Parent = () => {
-  const signal = useSignal();
-  const { status, imageDataUrl, setImageDataUrl } = useFlow();
+  const {
+    status,
+    imageDataUrl,
+    setImageDataUrl,
+    flashSignal,
+    captureSignal,
+    capture,
+  } = useFlow();
 
   return (
-    <main className={`min-h-screen`}>
-      <Button variant="primary">Click me</Button>
-
+    <main className={`min-h-screen`} onClick={() => capture()}>
       <pre>{JSON.stringify({ status, imageDataUrl }, undefined, 2)}</pre>
 
       <div className="flex justify-center items-center">
         <VideoStreamContainer>
           {(status === "capturing" || status === "selecting") && (
             <VideoStreamContainerItem>
-              <VideoStream
-                signal={signal}
+              <Flash signal={flashSignal} />
+            </VideoStreamContainerItem>
+          )}
+          {status === "capturing" && (
+            <VideoStreamContainerItem>
+              <DumbVideoStream
+                signal={captureSignal}
                 onCapture={(x) => setImageDataUrl(x)}
-                onClick={() => signal.changeSignal()}
-                showVideo={!imageDataUrl}
               />
             </VideoStreamContainerItem>
           )}
