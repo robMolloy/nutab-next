@@ -57,6 +57,8 @@ const Parent = () => {
     <main className={`min-h-screen`} onClick={() => capture()}>
       <pre>{JSON.stringify({ status, imageDataUrl }, undefined, 2)}</pre>
 
+      <h2>Tap anywhere to take photo</h2>
+
       <div className="flex justify-center items-center">
         <VideoStreamContainer>
           {(status === "capturing" || status === "selecting") && (
