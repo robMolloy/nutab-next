@@ -1,3 +1,3 @@
 export * from "./VideoStreamControls";
-export * from "./DisplayVideoStream";
+export * from "./DumbVideoStream";
 export * from "./videoStreamUtils";

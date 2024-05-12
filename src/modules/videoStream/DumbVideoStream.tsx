@@ -2,7 +2,8 @@ import { useVideoStreamDimensionsStore } from "@/stores/useVideoStreamDimensions
 import { VideoHTMLAttributes, useEffect, useRef, useState } from "react";
 import {
   checkVideoStream,
-  displayVideoStream,
+  displayVideoStreamInVideoElement,
+  getImageDataUrlFromVideoElement,
   safeGetVideoStream,
   stopVideoStream,
 } from ".";
@@ -10,14 +11,13 @@ import { useSignal } from "@/utils/useSignal";
 
 type THTMLVideoElement = VideoHTMLAttributes<HTMLVideoElement>;
 
-export type TDisplayVideoStreamProps = THTMLVideoElement & {
-  className: THTMLVideoElement["className"];
-  onCapture: () => void;
+export type TDumbVideoStreamProps = THTMLVideoElement & {
+  onCapture: (x: string) => void;
   signal: ReturnType<typeof useSignal>;
 };
 
-export const DisplayVideoStream = (p: TDisplayVideoStreamProps) => {
-  const { className, style, ...other } = p;
+export const DumbVideoStream = (p: TDumbVideoStreamProps) => {
+  const { className, style, onCapture, signal, ...other } = p;
   const store = useVideoStreamDimensionsStore();
 
   const videoElmRef = useRef<HTMLVideoElement>(null);
@@ -35,7 +35,7 @@ export const DisplayVideoStream = (p: TDisplayVideoStreamProps) => {
     if (!videoElmRef.current || !videoStreamResponse.success) return;
     setVideoStream(videoStreamResponse.data);
 
-    displayVideoStream({
+    displayVideoStreamInVideoElement({
       videoElm: videoElmRef.current,
       videoStream: videoStreamResponse.data,
     });
@@ -51,17 +51,20 @@ export const DisplayVideoStream = (p: TDisplayVideoStreamProps) => {
   useEffect(() => {
     init();
   }, [store.aspectRatio, store.width]);
+  useEffect(() => {
+    const videoElement = videoElmRef.current;
+    if (!videoElement) return;
+    const imageDataUrl = getImageDataUrlFromVideoElement({ videoElement });
+
+    if (imageDataUrl) onCapture(imageDataUrl);
+  }, [signal]);
 
   return (
     <video
       ref={videoElmRef}
       autoPlay
-      style={{
-        height: "inherit",
-        width: "inherit",
-        ...style,
-      }}
-      className={`absolute transform scale-x-[-1]  ${className}`}
+      style={style}
+      className={`absolute transform scale-x-[-1] h-full w-full ${className}`}
       {...other}
     />
   );
