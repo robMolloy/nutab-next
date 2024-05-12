@@ -21,7 +21,7 @@ export const VideoStream = (p: {
   }, [p.signal.signal]);
 
   return (
-    <VideoStreamContainer>
+    <VideoStreamContainer className={p.className}>
       <VideoStreamContainerItem>
         <Flash signal={flashSignal} />
       </VideoStreamContainerItem>

@@ -44,11 +44,9 @@ export const checkVideoStream = (p: {
   idealDimensions: { width: number; height: number };
 }) => {
   const videoStreamSettings = getVideoStreamSettings(p.videoStream);
-  console.log(videoStreamSettings);
 
   const height = videoStreamSettings?.height;
   const width = videoStreamSettings?.width;
-  console.log({ ideal: p.idealDimensions, actual: { width, height } });
 
   if (!width || !height)
     return {

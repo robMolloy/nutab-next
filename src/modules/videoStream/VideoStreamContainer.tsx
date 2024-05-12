@@ -3,6 +3,7 @@ import React from "react";
 
 export type TVideoStreamContainerProps = {
   children: React.ReactNode;
+  className?: HTMLDivElement["className"];
 };
 
 export const VideoStreamContainer = (p: TVideoStreamContainerProps) => {
@@ -10,7 +11,7 @@ export const VideoStreamContainer = (p: TVideoStreamContainerProps) => {
 
   return (
     <div
-      className={`relative h-[40vh]`}
+      className={`relative h-[40vh] ${p.className}`}
       style={{ width: `${40 * store.calculateRatio()}vh` }}
     >
       {p.children}
