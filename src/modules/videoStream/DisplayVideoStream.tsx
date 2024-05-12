@@ -1,22 +1,23 @@
 import { useVideoStreamDimensionsStore } from "@/stores/useVideoStreamDimensionsStore";
-import { useEffect, useRef, useState } from "react";
+import { VideoHTMLAttributes, useEffect, useRef, useState } from "react";
 import {
   checkVideoStream,
   displayVideoStream,
   safeGetVideoStream,
   stopVideoStream,
 } from ".";
+import { useSignal } from "@/utils/useSignal";
 
-// type HTMLVideoElement = DetailedHTMLProps<
-//   VideoHTMLAttributes<HTMLVideoElement>,
-//   HTMLVideoElement
-// >;
+type THTMLVideoElement = VideoHTMLAttributes<HTMLVideoElement>;
 
-export type TDisplayVideoStreamProps = {
-  className: HTMLVideoElement["className"];
+export type TDisplayVideoStreamProps = THTMLVideoElement & {
+  className: THTMLVideoElement["className"];
+  onCapture: () => void;
+  signal: ReturnType<typeof useSignal>;
 };
 
 export const DisplayVideoStream = (p: TDisplayVideoStreamProps) => {
+  const { className, style, ...other } = p;
   const store = useVideoStreamDimensionsStore();
 
   const videoElmRef = useRef<HTMLVideoElement>(null);
@@ -56,12 +57,12 @@ export const DisplayVideoStream = (p: TDisplayVideoStreamProps) => {
       ref={videoElmRef}
       autoPlay
       style={{
-        position: "absolute",
-        transform: "scaleX(-1)",
         height: "inherit",
         width: "inherit",
+        ...style,
       }}
-      className={p.className}
+      className={`absolute transform scale-x-[-1]  ${className}`}
+      {...other}
     />
   );
 };
