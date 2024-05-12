@@ -1,16 +1,9 @@
+import { useSignal } from "@/utils/useSignal";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
-type TFlashSignal = number;
-export const useFlash = () => {
-  const [flashSignal, setFlashSignal] = useState<TFlashSignal>(0);
-  const flash = () => setFlashSignal(Math.random());
-
-  return { flash, flashSignal };
-};
-
 export const Flash = (p: {
-  flashSignal: TFlashSignal;
+  signal: ReturnType<typeof useSignal>;
   children?: React.ReactNode;
 }) => {
   const [firstRender, setFirstRender] = useState(true);
@@ -25,7 +18,7 @@ export const Flash = (p: {
     if (firstRender) return setFirstRender(false);
 
     addFlash();
-  }, [p.flashSignal]);
+  }, [p.signal.signal]);
 
   useEffect(() => {
     if (flashes.length === 0) return;
