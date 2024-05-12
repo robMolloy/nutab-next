@@ -1,13 +1,13 @@
 import { create } from "zustand";
 
 const aspectRatios = [
-  [4, 6],
-  [4, 4],
-  [6, 4],
-  [9, 5],
-  [10, 6],
-  [1920, 1080],
-  [6, 1],
+  [2, 1],
+  [3, 2],
+  [4, 3],
+  [1, 1],
+  [3, 4],
+  [2, 3],
+  [1, 2],
 ] as const;
 
 type TAspectRatios = typeof aspectRatios;
@@ -22,8 +22,8 @@ type TVideoStreamDimensionsState = {
   getHeight: () => number;
 };
 
-export const useVideoStreamDimensionsStoreBase =
-  create<TVideoStreamDimensionsState>()((set, get) => ({
+const useVideoStreamDimensionsStoreBase = create<TVideoStreamDimensionsState>()(
+  (set, get) => ({
     aspectRatios: aspectRatios,
     aspectRatio: aspectRatios[0],
     setAspectRatio: (aspectRatio) => set(() => ({ aspectRatio })),
@@ -33,7 +33,8 @@ export const useVideoStreamDimensionsStoreBase =
       const aspectRatio = get().aspectRatio;
       return Math.floor((get().width * aspectRatio[1]) / aspectRatio[0]);
     },
-  }));
+  })
+);
 
 export const useVideoStreamDimensionsStore = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,5 +48,10 @@ export const useVideoStreamDimensionsStore = () => {
     store.setWidth(p.width);
   };
 
-  return { ...store, height: getHeight(), set };
+  return {
+    ...store,
+    height: getHeight(),
+    calculateRatio: () => store.aspectRatio[0] / store.aspectRatio[1],
+    set,
+  };
 };
