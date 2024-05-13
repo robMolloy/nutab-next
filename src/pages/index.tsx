@@ -122,7 +122,7 @@ const Parent = () => {
                 <div className="flex flex-col items-center gap-2">
                   <Button
                     variant="error"
-                    onClick={async () => setStatus("selecting")}
+                    onClick={() => setStatus("selecting")}
                   >
                     Try again
                   </Button>

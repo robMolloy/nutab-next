@@ -1,4 +1,3 @@
-- TODO: create useVideoStreamDimensionsStore
-- TODO: create streamDimensionsControls
-- TODO: getVideoStream
-- TODO: display video stream on page
+- TODO: Nu tab (or existing tab)
+- TODO: Item details
+- TODO: Giver's details
