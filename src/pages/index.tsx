@@ -1,5 +1,6 @@
 import { Button } from "@/components";
 import { Flash } from "@/modules";
+import { ItemForm } from "@/modules/cycleFlow";
 import { DumbVideoStream } from "@/modules/videoStream";
 import {
   VideoStreamContainer,
@@ -15,8 +16,9 @@ const delay = async (x: number) => {
 };
 
 type TFlowStatus =
+  | "item_form"
+  | "giver_form"
   | "capturing"
-  | "ready"
   | "selecting"
   | "sending"
   | "fail"
@@ -33,7 +35,7 @@ const useFlow = () => {
     captureSignal.changeSignal();
   };
 
-  const [status, setStatus] = useState<TFlowStatus>("capturing");
+  const [status, setStatus] = useState<TFlowStatus>("item_form");
 
   return {
     status,
@@ -67,6 +69,35 @@ const Parent = () => {
       }}
     >
       <br />
+      {status === "item_form" && (
+        <div>
+          <div>
+            <ItemForm
+              onFormSuccess={() => {
+                console.log("success");
+              }}
+              onFormFail={() => {
+                console.log("fail");
+              }}
+            />
+          </div>
+          <div>
+            <Button variant="primary" onClick={() => setStatus("giver_form")}>
+              Go to giver form
+            </Button>
+          </div>
+        </div>
+      )}
+      {status === "giver_form" && (
+        <div>
+          <div>giver form</div>
+          <div>
+            <Button variant="primary" onClick={() => setStatus("capturing")}>
+              Go to capture
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="prose w-full m-auto">
         <h2 className="text-center">
           {status === "capturing" && "Tap anywhere to take photo"}
