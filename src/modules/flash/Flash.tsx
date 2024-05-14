@@ -38,7 +38,7 @@ export const Flash = (p: {
               key={x}
               onAnimationEndCapture={() => removeFlash(x)}
               className="absolute opacity-0 h-full w-full bg-white"
-              style={{ animation: "flashFade 1s", transition: "opacity 1s" }}
+              style={{ animation: "flashFade 1s" }}
             />
           ))}
       </div>
