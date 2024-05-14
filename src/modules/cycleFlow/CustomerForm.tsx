@@ -2,27 +2,23 @@ import { Button, Input } from "@/components";
 import { useState } from "react";
 
 const initFormValues = {
-  itemName: "",
-  itemDescription: "",
+  giverPhoneNumber: "",
 };
 
-export const ItemForm = (p: {
+export const CustomerForm = (p: {
   onFormSuccess: (x: typeof initFormValues) => void;
-  onFormFail: (
-    x: Extract<ReturnType<typeof checkForm>, { success: false }>["error"]
-  ) => void;
+  onFormFail: () => void;
 }) => {
   const [formValues, setFormValues] = useState({
-    itemName: "",
-    itemDescription: "",
+    giverPhoneNumber: "",
   });
   const checkForm = () => {
-    if (formValues.itemName.length < 5)
+    if (formValues.giverPhoneNumber.length < 5)
       return {
         success: false,
         error: {
-          message: "itemName should be more than 4 characters",
-          input: "itemName",
+          message: "giverPhoneNumber should be more than 4 characters",
+          input: "giverPhoneNumber",
         },
       } as const;
 
@@ -36,20 +32,14 @@ export const ItemForm = (p: {
           const checkFormResponse = checkForm();
           if (checkFormResponse.success) return p.onFormSuccess(formValues);
 
-          p.onFormFail(checkFormResponse.error);
+          p.onFormFail();
         }}
       >
         <Input
           type="text"
           label="Item Name"
-          onInput={(x) => setFormValues({ ...formValues, itemName: x })}
-          value={formValues.itemName}
-        />
-        <Input
-          type="text"
-          label="Item Description"
-          onInput={(x) => setFormValues({ ...formValues, itemDescription: x })}
-          value={formValues.itemDescription}
+          onInput={(x) => setFormValues({ ...formValues, giverPhoneNumber: x })}
+          value={formValues.giverPhoneNumber}
         />
         <pre>{JSON.stringify({ formValues }, undefined, 2)}</pre>
         <Button type="submit" variant="primary">

@@ -1,2 +1,2 @@
-export * from "./GiverForm";
+export * from "./CustomerForm";
 export * from "./ItemForm";
