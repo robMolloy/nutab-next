@@ -98,7 +98,7 @@ export const ThemeSelector = () => {
                 <div className="flex gap-2">
                   {Object.entries(colorClassMap).map((entry) => (
                     <div key={`${x}-${entry[0]}`}>
-                      <div className="tooltip" data-tip={entry[1]}>
+                      <div className="tooltip" data-tip={entry[0]}>
                         <div
                           className={`badge ${entry[1]} badge-xs border-base-100`}
                         ></div>

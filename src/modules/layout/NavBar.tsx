@@ -34,7 +34,7 @@ export const NavBar = (p: { onToggleClick: () => void }) => {
           </div>
           <div
             tabIndex={0}
-            className="dropdown-content mt-1 z-[1] p-2 shadow bg-base-300"
+            className="dropdown-content mt-1 z-[1] p-2 shadow bg-neutral"
           >
             <div className="h-[75vh] overflow-y-scroll">
               <ThemeSelector />
