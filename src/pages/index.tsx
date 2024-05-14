@@ -1,13 +1,12 @@
 import { Button } from "@/components";
 import { Flash } from "@/modules";
-import { ItemForm } from "@/modules/cycleFlow";
+import { CustomerForm, ItemForm } from "@/modules/cycleFlow";
+import { useFlow } from "@/modules/cycleFlow/useFlow";
 import { DumbVideoStream } from "@/modules/videoStream";
 import {
   VideoStreamContainer,
   VideoStreamContainerItem,
 } from "@/modules/videoStream/VideoStreamContainer";
-import { useSignal } from "@/utils/useSignal";
-import { useState } from "react";
 
 const delay = async (x: number) => {
   return new Promise((resolve) => {
@@ -15,41 +14,12 @@ const delay = async (x: number) => {
   });
 };
 
-type TFlowStatus =
-  | "item_form"
-  | "giver_form"
-  | "capturing"
-  | "selecting"
-  | "sending"
-  | "fail"
-  | "success";
-
-const useFlow = () => {
-  const [imageDataUrl, setImageDataUrl] = useState<string | undefined>();
-
-  const flashSignal = useSignal();
-  const captureSignal = useSignal();
-
-  const capture = () => {
-    flashSignal.changeSignal();
-    captureSignal.changeSignal();
-  };
-
-  const [status, setStatus] = useState<TFlowStatus>("item_form");
-
-  return {
-    status,
-    setStatus,
-    imageDataUrl,
-    setImageDataUrl,
-    flashSignal,
-    captureSignal,
-    capture,
-  };
-};
-
 const Parent = () => {
   const {
+    itemFormValues,
+    setItemFormValues,
+    giverFormValues,
+    setGiverFormValues,
     status,
     setStatus,
     imageDataUrl,
@@ -73,28 +43,29 @@ const Parent = () => {
         <div>
           <div>
             <ItemForm
-              onFormSuccess={() => {
-                console.log("success");
+              onFormSuccess={(x) => {
+                setItemFormValues(x);
+                setStatus("giver_form");
               }}
               onFormFail={() => {
                 console.log("fail");
               }}
             />
           </div>
-          <div>
-            <Button variant="primary" onClick={() => setStatus("giver_form")}>
-              Go to giver form
-            </Button>
-          </div>
         </div>
       )}
       {status === "giver_form" && (
         <div>
-          <div>giver form</div>
           <div>
-            <Button variant="primary" onClick={() => setStatus("capturing")}>
-              Go to capture
-            </Button>
+            <CustomerForm
+              onFormSuccess={(x) => {
+                setGiverFormValues(x);
+                setStatus("capturing");
+              }}
+              onFormFail={() => {
+                console.log("fail");
+              }}
+            />
           </div>
         </div>
       )}
@@ -125,7 +96,9 @@ const Parent = () => {
               />
             </VideoStreamContainerItem>
           )}
-          {(status === "selecting" || status === "sending") && (
+          {(status === "selecting" ||
+            status === "sending" ||
+            status === "success") && (
             <VideoStreamContainerItem>
               <div
                 className={`flex w-full h-full`}
@@ -161,21 +134,6 @@ const Parent = () => {
               </div>
             </VideoStreamContainerItem>
           )}
-          {status === "success" && (
-            <VideoStreamContainerItem>
-              <div className="flex justify-center w-full h-full items-center">
-                <div className="flex flex-col items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    outline
-                    onClick={async () => setStatus("capturing")}
-                  >
-                    Start again
-                  </Button>
-                </div>
-              </div>
-            </VideoStreamContainerItem>
-          )}
         </VideoStreamContainer>
       </div>
       <br />
@@ -186,7 +144,7 @@ const Parent = () => {
             onClick={async () => {
               setStatus("sending");
               await delay(1000);
-              setStatus(Math.random() > 0.3 ? "success" : "fail");
+              setStatus(Math.random() > 0.8 ? "success" : "fail");
             }}
           >
             Select
@@ -201,6 +159,28 @@ const Parent = () => {
           >
             Discard
           </Button>
+        </div>
+      )}
+      {status === "success" && (
+        <div className="flex flex-col justify-center items-center">
+          <div>
+            <pre>
+              {JSON.stringify(
+                { itemFormValues, giverFormValues },
+                undefined,
+                2
+              )}
+            </pre>
+          </div>
+          <div>
+            <Button
+              variant="ghost"
+              outline
+              onClick={async () => setStatus("capturing")}
+            >
+              Start again
+            </Button>
+          </div>
         </div>
       )}
     </main>
